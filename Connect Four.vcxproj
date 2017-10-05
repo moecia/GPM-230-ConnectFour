@@ -111,17 +111,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CheckboardUpdater.cpp" />
     <ClCompile Include="ConnectFour.cpp" />
-    <ClCompile Include="PlaceTheChess.cpp" />
-    <ClCompile Include="Referee.cpp" />
-    <ClCompile Include="TurnManager.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="CheckboardUpdater.h" />
-    <ClInclude Include="PlaceTheChess.h" />
-    <ClInclude Include="Referee.h" />
-    <ClInclude Include="TurnManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

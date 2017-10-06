@@ -5,15 +5,21 @@
 
 #include <iostream>
 
+#define P_O 1
+#define P_X 2
+#define DRAW 3
+#define MAXROW 6
+#define MAXCOL 7
+
 using namespace std;
 
 void TurnCounter();
 void UpdateCheckerboard();			//Update the 'Looking' of the checkerboard
-void PlaceTheChess();
-void CheckerboardUpdater(int);		//Update the actual value which presented chest in the checkerboard
+void PlaceTheChess(int &last_row, int &last_col);
+int CheckerboardUpdater(int);		//Update the actual value which presented chest in the checkerboard
 void CheckerboardInitialize();
 bool ColumnChecker(int);			//Check the column which player input is avaiable or not
-void Referee();
+void Referee(int last_row, int last_col);
 void Restart(int);
 
 int currentTurn = 0;
@@ -21,12 +27,16 @@ int checkerboard[6][7];
 
 int main()
 {
+	int last_row;
+	int last_col;
 	while (1)
 	{
 		TurnCounter();
 		UpdateCheckerboard();
-		PlaceTheChess();
-		Referee();
+		PlaceTheChess(last_row, last_col);
+		//cout << "row: " << last_row << ", col:" << last_col << endl;
+		Referee(last_row, last_col);
+		system("cls");
 	}
 	return 0;
 	system("PAUSE");
@@ -90,7 +100,7 @@ void UpdateCheckerboard()
 	}
 }
 
-void PlaceTheChess()
+void PlaceTheChess(int &last_row, int &last_col)
 {
 	int column;
 	bool isColumnAvailable;
@@ -104,6 +114,7 @@ void PlaceTheChess()
 			cout << "Player O's turn! Type the column number to insert a piece: " << endl;
 			cin >> column;
 			column = column - 1;
+			last_col = column;
 			isColumnAvailable = ColumnChecker(column);
 
 			if (column >= 7)
@@ -114,7 +125,7 @@ void PlaceTheChess()
 
 			if (column < 7 && isColumnAvailable == true)
 			{
-				CheckerboardUpdater(column);
+				last_row = CheckerboardUpdater(column);
 				i = 0;
 			}
 		}
@@ -124,6 +135,7 @@ void PlaceTheChess()
 			cout << "Player X's turn! Type the column number to insert a piece: " << endl;
 			cin >> column;
 			column = column - 1;
+			last_col = column;
 			isColumnAvailable = ColumnChecker(column);
 
 			if (column >= 7)
@@ -134,7 +146,7 @@ void PlaceTheChess()
 
 			if (column < 7 && isColumnAvailable == true)
 			{
-				CheckerboardUpdater(column);
+				last_row = CheckerboardUpdater(column);
 				i = 0;
 			}
 		}
@@ -143,37 +155,37 @@ void PlaceTheChess()
 	
 }
 
-void CheckerboardUpdater(int col)
+int CheckerboardUpdater(int col)
 {
-	int raw = 5;
+	int row = 5;
 	if (currentTurn % 2 == 0)
 	{
-		while (raw >= 0)
+		while (row >= 0)
 		{
-			if (checkerboard[raw][col] == 0)
+			if (checkerboard[row][col] == 0)
 			{
-				checkerboard[raw][col] = 1;
-				raw = -1;
+				checkerboard[row][col] = 1;
+				return row;
 			}
-			if (checkerboard[raw][col] != 0)
+			if (checkerboard[row][col] != 0)
 			{
-				raw--;
+				row--;
 			}
 		}
 	}
 
 	if (currentTurn % 2 == 1)
 	{
-		while (raw >= 0)
+		while (row >= 0)
 		{
-			if (checkerboard[raw][col] == 0)
+			if (checkerboard[row][col] == 0)
 			{
-				checkerboard[raw][col] = 2;
-				raw = -1;
+				checkerboard[row][col] = 2;
+				return row;
 			}
-			if (checkerboard[raw][col] != 0)
+			if (checkerboard[row][col] != 0)
 			{
-				raw--;
+				row--;
 			}
 		}
 	}
@@ -191,89 +203,89 @@ bool ColumnChecker(int col)
 	return isColumnAvailable;
 }
 
-void Referee()
+void Referee(int last_row, int last_col)
 {
-	int Ocounter = 0;
-	int Xcounter = 0;
-	if (currentTurn > 3)
+	if (currentTurn <= 3)
+		return;
+	// get the current player
+	int currentPiece = checkerboard[last_row][last_col];
+	
+	// row
+	int rowCount = 1;
+	for (int c = last_col - 1; c >= 0; c--)
 	{
-		//Check Raw
-		for (int raw = 5; raw >= 0; raw--)
-		{
-			for (int col = 0; col < 7; col++)
-			{
-				if (Xcounter == 3)
-					Restart(0);
-				if (Ocounter == 3)
-					Restart(1);
-
-				if (checkerboard[raw][col] == 1 && checkerboard[raw][col - 1] == 1 && checkerboard[raw][col + 1] == 1)
-					Ocounter += 1;
-				if (checkerboard[raw][col] == 2 && checkerboard[raw][col - 1] == 2 && checkerboard[raw][col + 1] == 2)
-					Xcounter += 1;
-			}
-		}
-
-		Ocounter = 0;
-		Xcounter = 0;
-		//Check Col
-		for (int col = 0; col < 7; col++)
-		{
-			for (int raw = 5; raw >= 0; raw--)
-			{
-				if (Xcounter == 3)
-					Restart(0);
-				if (Ocounter == 3)
-					Restart(1);
-
-				if (checkerboard[raw][col] == 1 && checkerboard[raw-1][col] == 1 && checkerboard[raw + 1][col] == 1)
-					Ocounter += 1;
-				if (checkerboard[raw][col] == 2 && checkerboard[raw-1][col] == 2 && checkerboard[raw + 1][col] == 2)
-					Xcounter += 1;
-			}
-		}
-
-		Ocounter = 0;
-		Xcounter = 0;
-		//Check Left Diagonal - "\"
-		for (int raw = 5; raw >= 0; raw--)
-		{
-			for (int col = 0; col < 7; col++)
-			{
-				if (Xcounter == 3)
-					Restart(0);
-				if (Ocounter == 3)
-					Restart(1);
-
-				if (checkerboard[raw][col] == 1 && checkerboard[raw - 1][col - 1] == 1 && checkerboard[raw + 1][col + 1] == 1)
-					Ocounter += 1;
-				if (checkerboard[raw][col] == 2 && checkerboard[raw - 1][col - 1] == 2 && checkerboard[raw + 1][col + 1] == 2)
-					Xcounter += 1;
-			}
-		}
-		//Check Right Diagonal - "/"
-		Ocounter = 0;
-		Xcounter = 0;
-		for (int raw = 5; raw >= 0; raw--)
-		{
-			for (int col = 0; col < 7; col++)
-			{
-				if (Xcounter == 3)
-					Restart(0);
-				if (Ocounter == 3)
-					Restart(1);
-
-				if (checkerboard[raw][col] == 1 && checkerboard[raw - 1][col + 1] == 1 && checkerboard[raw + 1][col - 1] == 1)
-					Ocounter += 1;
-				if (checkerboard[raw][col] == 2 && checkerboard[raw - 1][col + 1] == 2 && checkerboard[raw + 1][col - 1] == 2)
-					Xcounter += 1;
-			}
-		}
+		if (checkerboard[last_row][c] != currentPiece)
+			break;
+		rowCount++;
+	}
+	for (int c = last_col + 1; c < 7; c++)
+	{
+		if (checkerboard[last_row][c] != currentPiece)
+			break;
+		rowCount++;
+	}
+	if (rowCount >= 4)
+	{
+		Restart(currentPiece);
+	}
+	// col
+	int colCount = 1;
+	for (int r = last_row - 1; r >= 0; r--)
+	{
+		if (checkerboard[r][last_col] != currentPiece)
+			break;
+		colCount++;
+	}
+	for (int r = last_row + 1; r < 6; r++)
+	{
+		if (checkerboard[r][last_col] != currentPiece)
+			break;
+		colCount++;
+	}
+	if (colCount >= 4)
+	{
+		Restart(currentPiece);
 	}
 
-
+	//Check Left Diagonal - "\"
+	int leftDiagonalCount = 1;
+	for (int r = last_row - 1, c = last_col - 1; c >= 0 && r >= 0; c--, r--)
+	{
+		if (checkerboard[r][c] != currentPiece)
+			break;
+		leftDiagonalCount++;
+	}
+	for (int r = last_row + 1, c = last_col + 1; c <= 6 && r <= 5; c++, r++)
+	{
+		if (checkerboard[r][c] != currentPiece)
+			break;
+		leftDiagonalCount++;
+	}
+	if (leftDiagonalCount >= 4)
+	{
+		Restart(currentPiece);
+	}
+	//Check Right Diagonal - "/"
+	int rightDiagonalCount = 1;
+	for (int r = last_row - 1 , c = last_col + 1; c <= 6  && r >= 0; c++, r--)
+	{
+		if (checkerboard[r][c] != currentPiece)
+			break;
+		rightDiagonalCount++;
+	}
+	for (int r = last_row + 1, c = last_col - 1; c >= 0 && r <= 5; c--, r++)
+	{
+		if (checkerboard[r][c] != currentPiece)
+			break;
+		rightDiagonalCount++;
+	}
+	if (rightDiagonalCount >= 4)
+	{
+		Restart(currentPiece);
+	}
+	//Draw
 	if (currentTurn == 42)
-		Restart(2);
+		Restart(DRAW);
 }
 
 void Restart(int endStat)
@@ -281,13 +293,13 @@ void Restart(int endStat)
 	int isPlayAgain;
 	switch (endStat)
 	{
-		case 0:
+		case P_X:
 			cout << "X win the Game!" << endl;
 			break;
-		case 1:
+		case P_O:
 			cout << "O win the Game!" << endl;
 			break;
-		case 2:
+		case DRAW:
 			cout << "Draw!" << endl;
 			break;
 	}

@@ -1,7 +1,8 @@
-//Project name: GAME-230-Project#2-Connect Four
-//Author: Bingnan Li, Nathan				  
-//Date: 10/05/2017								
-//Version: Unfinished
+//Project name:		  GAME-230-Project#2-Connect Four
+//Author:		      Bingnan Li, Nathan				  
+//Created Date:		  10/05/2017	
+//Last Modified Date: 10/07/2017
+//Version:			  Finished, Normal Mode + Hard Mode I & K
 
 #include <iostream>
 #include <algorithm>

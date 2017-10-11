@@ -7,6 +7,7 @@
 #include <iostream>
 #include <algorithm>
 
+
 #define P_O 1
 #define P_X 2
 #define DRAW 3
@@ -60,6 +61,8 @@ int main()
 		if (currentMode == CUSTOMMODE)
 		{
 			TurnCounter();
+			if (MAXCOL >= 10)
+				cout << "Note: Input 10 = A, 11 = B, 12 = C, 13 = D, 14 = E, 15 = F, 16 = G, 17 = H, 18 = I, 19 = J, 20 = K." << endl;
 			UpdateCheckerboard();
 			PlaceTheChess(last_row, last_col);
 			Referee(last_row, last_col);
@@ -203,7 +206,7 @@ void UpdateCheckerboard()
 
 void PlaceTheChess(int &last_row, int &last_col)
 {
-	char column;
+	int column;
 	bool isColumnAvailable;
 	currentTurn += 1;
 	int i = 1;
@@ -213,7 +216,7 @@ void PlaceTheChess(int &last_row, int &last_col)
 		{
 			cout << "Player O's turn! Type the column number to insert a piece: " << endl;
 			cin >> column;
-			column = ColumnTranslator(column);
+			//column = ColumnTranslator(column);
 			column = column - 1;
 			last_col = column;
 			isColumnAvailable = isColFull(column);
@@ -235,7 +238,7 @@ void PlaceTheChess(int &last_row, int &last_col)
 		{
 			cout << "Player X's turn! Type the column number to insert a piece: " << endl;
 			cin >> column;
-			column = ColumnTranslator(column);
+			//column = ColumnTranslator(column);
 			column = column - 1;
 			last_col = column;
 			isColumnAvailable = isColFull(column);

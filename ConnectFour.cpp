@@ -389,7 +389,7 @@ void Referee(int last_row, int last_col)
 		Restart(currentPiece);
 	}
 	//Draw
-	if (currentTurn == 42)
+	if (currentTurn == MAXCOL * MAXROW)
 		Restart(DRAW);
 }
 
@@ -422,7 +422,7 @@ void Restart(int endStat)
 			delete checkerboard[i];
 
 		delete checkerboard;
-		checkerboard = NULL;
+		checkerboard  = nullptr;
 
 		currentTurn = 0;
 		currentMode = -1;
